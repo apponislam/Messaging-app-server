@@ -8,7 +8,6 @@ export const initSocket = (server: any) => {
     });
 
     io.on("connection", (socket) => {
-        // client should call socket.emit("join", userId) after login
         socket.on("join", (userId: string) => {
             socket.join(userId);
         });

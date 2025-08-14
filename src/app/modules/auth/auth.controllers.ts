@@ -30,9 +30,6 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
 
     const result = await authServices.loginUser({ email, password });
 
-    console.log(config.jwt_refresh_expire);
-    console.log(Number(config.jwt_refresh_expire));
-
     res.cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
         secure: config.node_env === "production",
