@@ -5,7 +5,7 @@ import config from "../config";
 import userModel from "../modules/auth/auth.model";
 
 const auth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization; // Get the token from the header
+    const token = req.headers.authorization;
     if (!token) {
         throw new Error("Authentication failed: No token provided");
     }
