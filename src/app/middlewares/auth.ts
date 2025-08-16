@@ -11,6 +11,7 @@ const auth = catchAsync(async (req: Request, res: Response, next: NextFunction) 
     }
 
     const decoded = jwt.verify(token, config.jwt_access_secret as string) as { email: string };
+    // console.log(decoded);
 
     const user = await userModel.findOne({ email: decoded?.email });
     if (!user) {

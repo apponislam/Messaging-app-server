@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
+
 export interface IMessage {
-    sender: string;
-    receiver: string;
+    sender: mongoose.Types.ObjectId;
+    receiver: mongoose.Types.ObjectId;
     content: string;
     createdAt?: Date;
     updatedAt?: Date;
