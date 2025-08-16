@@ -5,6 +5,7 @@ import { getIO } from "../../socket";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { MessageModel } from "./message.model";
+import { NotificationModel } from "../notifications/notification.model";
 
 const sendMessage = catchAsync(async (req: Request, res: Response) => {
     const sender = req.user._id;
@@ -14,16 +15,17 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
 
     const notif = await notificationServices.createSimple(receiver, "message", `New message from ${req.user.name}`);
 
+    const populatedNotif = await NotificationModel.findById(notif._id).populate("userId", "_id name avatarUrl").lean();
+
     const populatedMessage = await MessageModel.findById(message._id).populate("sender", "_id name email username avatarUrl").populate("receiver", "_id name email username avatarUrl").lean();
 
     const io = getIO();
-    // io.emit(`newMessage::${receiver}`, message);
-    // io.emit(`newNotification::${receiver}`, notif);
     io.to(`user_${receiver}`).emit("newMessage", populatedMessage);
     io.to(`user_${sender}`).emit("newMessage", populatedMessage);
 
     // Send notification only to receiver
-    io.to(`user_${receiver}`).emit("newNotification", notif);
+    // io.to(`user_${sender}`).emit("newNotification", notif);
+    io.to(`user_${receiver}`).emit("newNotification", populatedNotif);
 
     sendResponse(res, {
         statusCode: 201,
