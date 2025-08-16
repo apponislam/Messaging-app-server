@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
+
 export type NotificationType = "message" | "friend_request" | "system";
 
 export interface INotification {
-    userId: string;
+    userId: mongoose.Types.ObjectId;
     type: NotificationType;
     message: string;
     read?: boolean;

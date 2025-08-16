@@ -3,6 +3,7 @@ import { Server as HttpServer } from "http";
 import { Server as HttpsServer } from "https";
 import config from "../config";
 import jwt from "jsonwebtoken";
+import ApiError from "../errors/AppError";
 
 let io: Server;
 
@@ -33,7 +34,7 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
     io.use(async (socket: SocketWithUser, next) => {
         try {
             const token = socket.handshake.auth.token;
-            console.log("Auth token received:", token);
+            // console.log("Auth token received:", token);
 
             if (!token) {
                 console.error("No token provided");
@@ -55,8 +56,9 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
 
             next();
         } catch (err) {
-            console.error("Detailed auth error:", err);
-            next(new Error("Authentication failed: " + err));
+            // console.error("Socket auth error:", err);
+            next(new ApiError(403, "Authentication failed"));
+            // next(new Error("Authentication failed"));
         }
     });
 
@@ -70,7 +72,7 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
         socket.join(`notifications_${socket.user._id}`);
 
         socket.on("disconnect", () => {
-            console.log(`User disconnected: ${socket.user?._id}`);
+            // console.log(`User disconnected: ${socket.user?._id}`);
         });
     });
 
