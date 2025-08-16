@@ -11,7 +11,10 @@ const getMessagesBetweenUsers = async (userA: string, userB: string) => {
             { sender: userA, receiver: userB },
             { sender: userB, receiver: userA },
         ],
-    }).sort({ createdAt: 1 });
+    })
+        .sort({ createdAt: 1 })
+        .populate("sender", "_id name email username avatarUrl")
+        .populate("receiver", "_id name email username avatarUrl");
 };
 
 export const messageServices = {
