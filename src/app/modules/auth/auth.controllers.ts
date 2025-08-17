@@ -5,6 +5,7 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import config from "../../config";
 import { convertTimeToMS } from "../../utils/convertTime";
+import ApiError from "../../errors/AppError";
 
 const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userData = req.body;
@@ -47,7 +48,31 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
     });
 });
 
+const refreshAccessToken = catchAsync(async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+
+    // console.log(refreshToken);
+
+    if (!refreshToken) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Refresh token is required");
+    }
+
+    // console.log(refreshToken);
+
+    const result = await authServices.refreshToken(refreshToken);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Access token refreshed successfully",
+        data: {
+            ...result,
+        },
+    });
+});
+
 export const userController = {
     createUser,
     loginUser,
+    refreshAccessToken,
 };

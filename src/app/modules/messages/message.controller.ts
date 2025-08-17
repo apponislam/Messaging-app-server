@@ -31,7 +31,7 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
         statusCode: 201,
         success: true,
         message: "Message sent successfully",
-        data: populatedMessage,
+        data: { populatedMessage, populatedNotif },
     });
 });
 

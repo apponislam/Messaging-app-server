@@ -67,7 +67,36 @@ const loginUser = async (payload: { email: string; password: string }) => {
     };
 };
 
+const refreshToken = async (token: string) => {
+    const decoded = jwtHelper.verifyToken(token, config.jwt_refresh_secret as string);
+
+    const user = await userModel.findById(decoded._id);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+
+    const jwtPayload = {
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+    };
+
+    const newAccessToken = jwtHelper.generateToken(jwtPayload, config.jwt_access_secret as string, config.jwt_access_expire as string);
+
+    const { password, ...userWithoutPassword } = user.toObject();
+
+    console.log(newAccessToken, userWithoutPassword);
+
+    return {
+        accessToken: newAccessToken,
+        user: userWithoutPassword,
+    };
+};
+
 export const authServices = {
     createUserIntoDB,
     loginUser,
+    refreshToken,
 };
