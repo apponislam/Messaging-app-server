@@ -6,6 +6,7 @@ import sendResponse from "../../utils/sendResponse";
 
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user._id;
+
     const result = await userServices.getUserByIdFromDB(userId);
 
     sendResponse(res, {
