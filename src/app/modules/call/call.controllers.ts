@@ -1,70 +1,73 @@
+// src/controllers/call.controller.ts
 import { Request, Response } from "express";
-import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { callServices } from "./call.services";
-import { getCallSocket } from "../../lib/sockets/callSocket";
+import { CallServices } from "./call.services";
 
-const createCallHandler = catchAsync(async (req: Request, res: Response) => {
-    const call = await callServices.createCall(req.user._id, req.body);
+const createCall = catchAsync(async (req: Request, res: Response) => {
+    const initiatorId = req.user._id; // comes from auth middleware
+    const call = await CallServices.createCall(initiatorId, req.body);
 
     sendResponse(res, {
-        statusCode: httpStatus.CREATED,
+        statusCode: 201,
         success: true,
-        message: "Call initiated successfully",
+        message: "Call created successfully",
         data: call,
     });
 });
 
-const updateCallHandler = catchAsync(async (req: Request, res: Response) => {
-    const call = await callServices.updateCall(req.params.callId, req.body);
+const updateCall = catchAsync(async (req: Request, res: Response) => {
+    const { callId } = req.params;
+    const call = await CallServices.updateCall(callId, req.body);
 
     sendResponse(res, {
-        statusCode: httpStatus.OK,
+        statusCode: 200,
         success: true,
         message: "Call updated successfully",
         data: call,
     });
 });
 
-const getCallHandler = catchAsync(async (req: Request, res: Response) => {
-    const call = await callServices.getCallById(req.params.callId);
+const getCall = catchAsync(async (req: Request, res: Response) => {
+    const { callId } = req.params;
+    const call = await CallServices.getCallById(callId);
 
     sendResponse(res, {
-        statusCode: httpStatus.OK,
+        statusCode: 200,
         success: true,
         message: "Call retrieved successfully",
         data: call,
     });
 });
 
-const getUserCallsHandler = catchAsync(async (req: Request, res: Response) => {
-    const calls = await callServices.getUserCalls(req.params.userId);
+const getUserCalls = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user._id;
+    const calls = await CallServices.getUserCalls(userId);
 
     sendResponse(res, {
-        statusCode: httpStatus.OK,
+        statusCode: 200,
         success: true,
         message: "User calls retrieved successfully",
         data: calls,
     });
 });
 
-const endCallHandler = catchAsync(async (req: Request, res: Response) => {
-    const call = await callServices.endCall(req.params.callId);
-    getCallSocket().to(req.params.callId).emit("call-ended");
+const deleteCall = catchAsync(async (req: Request, res: Response) => {
+    const { callId } = req.params;
+    await CallServices.deleteCall(callId);
 
     sendResponse(res, {
-        statusCode: httpStatus.OK,
+        statusCode: 200,
         success: true,
-        message: "Call ended successfully",
-        data: call,
+        message: "Call deleted successfully",
+        data: null,
     });
 });
 
-export const callControllers = {
-    createCallHandler,
-    updateCallHandler,
-    getCallHandler,
-    getUserCallsHandler,
-    endCallHandler,
+export const CallController = {
+    createCall,
+    updateCall,
+    getCall,
+    getUserCalls,
+    deleteCall,
 };

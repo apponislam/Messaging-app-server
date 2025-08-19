@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.get("/", (req: Request, res: Response) => {
     res.send({
-        message: "message server running",
+        message: "Massaging App Server Running",
     });
 });
 

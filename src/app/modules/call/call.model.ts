@@ -1,34 +1,48 @@
-import { Schema, model } from "mongoose";
-import { ICall } from "./call.interface";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { ICall, ICallParticipant } from "./call.interface";
 
-const CallSchema = new Schema<ICall>(
+export interface ICallDocument extends Omit<ICall, "_id">, Document {
+    _id: mongoose.Types.ObjectId;
+}
+
+export interface ICallModel extends Model<ICallDocument> {}
+
+const CallParticipantSchema = new Schema<ICallParticipant>(
     {
-        participants: [
-            {
-                userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-                joinedAt: { type: Date, default: Date.now },
-                leftAt: Date,
-            },
-        ],
-        startedAt: { type: Date, default: Date.now },
-        endedAt: Date,
-        duration: Number,
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        socketId: { type: String, required: true },
         status: {
             type: String,
-            enum: ["initiated", "ongoing", "completed", "missed", "rejected"],
-            default: "initiated",
+            enum: ["invited", "joined", "rejected", "missed"],
+            default: "invited",
         },
-        type: {
+        joinedAt: { type: Date },
+        leftAt: { type: Date },
+    },
+    { _id: false }
+);
+
+const CallSchema = new Schema<ICallDocument>(
+    {
+        callId: { type: String, required: true, unique: true },
+        initiator: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        participants: { type: [CallParticipantSchema], required: true },
+        type: { type: String, enum: ["audio", "video"], required: true },
+        status: {
             type: String,
-            enum: ["audio", "video"],
-            required: true,
+            enum: ["ringing", "ongoing", "completed", "missed", "rejected", "cancelled"],
+            default: "ringing",
         },
-        metadata: {
-            resolution: String,
-            codec: String,
-        },
+        startedAt: { type: Date, default: Date.now },
+        endedAt: { type: Date },
+        duration: { type: Number },
+
+        // Optional signaling data
+        offer: { type: Schema.Types.Mixed },
+        answers: { type: Map, of: Schema.Types.Mixed, default: {} },
+        iceCandidates: { type: Map, of: [Schema.Types.Mixed], default: {} },
     },
     { timestamps: true }
 );
 
-export const callModel = model<ICall>("Call", CallSchema);
+export const callModel: ICallModel = mongoose.models.Call || mongoose.model<ICallDocument, ICallModel>("Call", CallSchema);

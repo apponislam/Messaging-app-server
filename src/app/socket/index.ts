@@ -4,6 +4,7 @@ import { Server as HttpsServer } from "https";
 import config from "../config";
 import jwt from "jsonwebtoken";
 import ApiError from "../errors/AppError";
+import { initCallSocket } from "../lib/sockets/callSocket";
 
 let io: Server;
 
@@ -24,11 +25,12 @@ type SocketWithUser = Socket & {
 export const initSocket = (server: HttpServer | HttpsServer) => {
     io = new Server(server, {
         cors: {
-            origin: process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
+            origin: config.client_url || "http://localhost:3000",
             methods: ["GET", "POST"],
             credentials: true,
         },
-        transports: ["websocket"],
+        // transports: ["websocket"],
+        transports: ["websocket", "polling"],
     });
 
     io.use(async (socket: SocketWithUser, next) => {
@@ -55,7 +57,6 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
             next();
         } catch (err) {
             next(new ApiError(403, "Authentication failed"));
-            // next(new Error("Authentication failed"));
         }
     });
 
@@ -63,6 +64,8 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
         if (!socket.user) return socket.disconnect();
         socket.join(`user_${socket.user._id}`);
         socket.join(`notifications_${socket.user._id}`);
+
+        initCallSocket(socket);
 
         socket.on("disconnect", () => {});
     });
