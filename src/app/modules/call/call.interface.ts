@@ -1,36 +1,43 @@
 import { Types } from "mongoose";
 
-export type TCallStatus = "initiated" | "ongoing" | "completed" | "missed" | "rejected";
+export type TCallStatus = "ringing" | "ongoing" | "completed" | "missed" | "rejected" | "cancelled";
+
 export type TCallType = "audio" | "video";
 
 export interface ICallParticipant {
     userId: Types.ObjectId;
-    joinedAt: Date;
+    socketId: string;
+    status: "invited" | "joined" | "rejected" | "missed";
+    joinedAt?: Date;
     leftAt?: Date;
 }
 
 export interface ICall {
-    _id?: Types.ObjectId;
+    _id: Types.ObjectId;
+    callId: string; // Unique identifier for WebRTC peer connection
+    initiator: Types.ObjectId;
     participants: ICallParticipant[];
+    type: TCallType;
+    status: TCallStatus;
     startedAt: Date;
     endedAt?: Date;
     duration?: number;
-    status: TCallStatus;
-    type: TCallType;
-    metadata?: {
-        resolution?: string;
-        codec?: string;
-    };
+
+    // Optional signaling data
+    offer?: any; // WebRTC offer
+    answers?: Record<string, any>; // userId -> answer
+    iceCandidates?: Record<string, any[]>; // userId -> ICE candidates
 }
 
+// For starting a call
 export interface CreateCallPayload {
     recipientId: string;
     type: TCallType;
 }
 
+// For updating call lifecycle
 export interface UpdateCallPayload {
     status?: TCallStatus;
     endedAt?: Date;
-    "participants.$[elem].joinedAt"?: Date;
-    "participants.$[elem].leftAt"?: Date;
+    duration?: number;
 }

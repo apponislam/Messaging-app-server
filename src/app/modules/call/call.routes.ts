@@ -1,16 +1,13 @@
 import express from "express";
-import validateRequest from "../../middlewares/validateRequest";
-import { callControllers } from "./call.controllers";
-import { createCallSchema, updateCallSchema } from "./call.validation";
+import { CallController } from "./call.controllers";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
-router.post("/", validateRequest(createCallSchema), callControllers.createCallHandler);
-
-router.get("/user/:userId", callControllers.getUserCallsHandler);
-
-router.get("/:callId", callControllers.getCallHandler);
-
-router.patch("/:callId", validateRequest(updateCallSchema), callControllers.updateCallHandler);
+router.post("/", auth, CallController.createCall);
+router.patch("/:callId", auth, CallController.updateCall);
+router.get("/:callId", auth, CallController.getCall);
+router.get("/", auth, CallController.getUserCalls);
+router.delete("/:callId", auth, CallController.deleteCall);
 
 export const CallRoutes = router;
