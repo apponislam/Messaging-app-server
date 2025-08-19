@@ -87,7 +87,7 @@ const refreshToken = async (token: string) => {
 
     const { password, ...userWithoutPassword } = user.toObject();
 
-    console.log(newAccessToken, userWithoutPassword);
+    // console.log(newAccessToken, userWithoutPassword);
 
     return {
         accessToken: newAccessToken,

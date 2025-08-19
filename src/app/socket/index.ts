@@ -34,7 +34,6 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
     io.use(async (socket: SocketWithUser, next) => {
         try {
             const token = socket.handshake.auth.token;
-            // console.log("Auth token received:", token);
 
             if (!token) {
                 console.error("No token provided");
@@ -42,7 +41,6 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
             }
 
             const decoded = jwt.verify(token, config.jwt_access_secret as string) as DecodedUser;
-            // console.log("Decoded user:", decoded._id);
 
             socket.user = {
                 _id: decoded._id,
@@ -56,7 +54,6 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
 
             next();
         } catch (err) {
-            // console.error("Socket auth error:", err);
             next(new ApiError(403, "Authentication failed"));
             // next(new Error("Authentication failed"));
         }
@@ -64,16 +61,10 @@ export const initSocket = (server: HttpServer | HttpsServer) => {
 
     io.on("connection", (socket: SocketWithUser) => {
         if (!socket.user) return socket.disconnect();
-
-        // console.log(`User connected: ${socket.user._id}`);
-
-        // Join user-specific rooms
         socket.join(`user_${socket.user._id}`);
         socket.join(`notifications_${socket.user._id}`);
 
-        socket.on("disconnect", () => {
-            // console.log(`User disconnected: ${socket.user?._id}`);
-        });
+        socket.on("disconnect", () => {});
     });
 
     return io;
