@@ -1,7 +1,7 @@
 // src/socket/callSocket.ts
 import { Socket } from "socket.io";
 import { getIO } from "../../socket";
-import { CreateCallPayload, TCallStatus } from "../../modules/call/call.interface";
+import { CreateCallPayload, TCallStatus } from "../../app/modules/call/call.interface";
 
 export const initCallSocket = (socket: Socket & { user?: any }) => {
     if (!socket.user) return;

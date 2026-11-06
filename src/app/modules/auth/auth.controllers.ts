@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { authServices } from "./auth.services";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../../utils/catchAsync";
+import sendResponse from "../../../utils/sendResponse";
 import httpStatus from "http-status";
+import { convertTimeToMS } from "../../../utils/convertTime";
 import config from "../../config";
-import { convertTimeToMS } from "../../utils/convertTime";
-import ApiError from "../../errors/AppError";
+import ApiError from "../../../errors/ApiError";
 
 const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userData = req.body;

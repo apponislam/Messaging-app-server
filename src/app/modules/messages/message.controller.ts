@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { messageServices } from "./message.services";
 import { notificationServices } from "../notifications/notifications.services";
-import { getIO } from "../../socket";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import { getIO } from "../../../socket";
 import { MessageModel } from "./message.model";
 import { NotificationModel } from "../notifications/notification.model";
+import sendResponse from "../../../utils/sendResponse";
+import catchAsync from "../../../utils/catchAsync";
 
 const sendMessage = catchAsync(async (req: Request, res: Response) => {
     const sender = req.user._id;

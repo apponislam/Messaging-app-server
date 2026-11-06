@@ -3,7 +3,7 @@ import app from "./app";
 import config from "./app/config";
 import mongoose from "mongoose";
 import http from "http";
-import { initSocket } from "./app/socket";
+import { initSocket } from "./socket";
 
 async function main() {
     try {

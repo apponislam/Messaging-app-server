@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import httpStatus from "http-status";
-import catchAsync from "../../utils/catchAsync";
 import { userServices } from "./user.services";
-import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../../utils/catchAsync";
+import sendResponse from "../../../utils/sendResponse";
 
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user._id;

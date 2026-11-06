@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import catchAsync from "../utils/catchAsync";
+import catchAsync from "../../utils/catchAsync";
 import config from "../config";
 import userModel from "../modules/auth/auth.model";
-import ApiError from "../errors/AppError";
+import ApiError from "../../errors/ApiError";
 
 const auth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     let token = req.headers.authorization;

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import ApiError from "../errors/AppError";
-import catchAsync from "../utils/catchAsync";
 import { callModel } from "../modules/call/call.model";
+import catchAsync from "../../utils/catchAsync";
+import ApiError from "../../errors/ApiError";
 
 export const callParticipantAuth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const call = await callModel.findById(req.params.callId);

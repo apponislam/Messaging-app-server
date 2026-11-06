@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { notificationServices } from "./notifications.services";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../../utils/catchAsync";
+import sendResponse from "../../../utils/sendResponse";
 
 const getMyNotifications = catchAsync(async (req: Request, res: Response) => {
     const data = await notificationServices.getUserNotifications(req.user._id);

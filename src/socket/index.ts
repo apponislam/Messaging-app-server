@@ -1,10 +1,10 @@
 import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
 import { Server as HttpsServer } from "https";
-import config from "../config";
+import config from "../app/config";
 import jwt from "jsonwebtoken";
-import ApiError from "../errors/AppError";
 import { initCallSocket } from "../lib/sockets/callSocket";
+import ApiError from "../errors/ApiError";
 
 let io: Server;
 

@@ -1,11 +1,11 @@
 import config from "../../config";
-import { jwtHelper } from "../../helpers/jwtHelpers";
-import { userNameGenerator } from "../../utils/usernameGenerator";
+import { jwtHelper } from "../../../utils/jwtHelpers";
+import { userNameGenerator } from "../../../utils/usernameGenerator";
 import { TUser } from "./auth.interface";
 import { userModel } from "./auth.model";
 import httpStatus from "http-status";
 import bcrypt from "bcrypt";
-import ApiError from "../../errors/AppError";
+import ApiError from "../../../errors/ApiError";
 
 const createUserIntoDB = async (payload: Omit<TUser, "username">) => {
     const username = await userNameGenerator(payload.name);

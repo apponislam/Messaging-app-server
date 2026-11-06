@@ -1,4 +1,4 @@
-import { userModel } from "../modules/auth/auth.model";
+import { userModel } from "../app/modules/auth/auth.model";
 
 export async function userNameGenerator(fullName: string): Promise<string> {
     const baseName = fullName.toLowerCase().replace(/\s+/g, "");
