@@ -358,5 +358,6 @@ This project is open-source and licensed under the [MIT License](LICENSE).
 ## 👤 Author
 
 **Appon Islam**
-- Email: [appon2003@gmail.com](mailto:appon2003@gmail.com)
+- **Website / Portfolio:** [apponislam.com](https://apponislam.com)
+- **Email:** [apponislamdev@gmail.com](mailto:apponislamdev@gmail.com)
 
